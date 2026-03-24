@@ -32,10 +32,6 @@ services:
         sync: false
       - key: PINECONE_ENVIRONMENT
         sync: false
-      - key: MAIL_USERNAME
-        sync: false
-      - key: MAIL_PASSWORD
-        sync: false
       - key: CORS_ORIGINS
         value: https://your-frontend.onrender.com,https://dpqms-api.onrender.com
       - key: LOG_LEVEL
