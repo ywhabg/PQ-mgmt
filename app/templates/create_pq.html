@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Create PQ{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Create New PQ</h1>
+    <p class="page-subtitle">Capture a new parliamentary question record for tracking and action.</p>
+</div>
+
+<div class="card">
+    <h2 class="card-title">PQ Information</h2>
+
+    <form method="POST">
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="pq_reference_no">Reference No</label>
+                <input type="text" id="pq_reference_no" name="pq_reference_no" required>
+            </div>
+
+            <div class="form-group">
+                <label for="agency">Agency</label>
+                <input type="text" id="agency" name="agency" required>
+            </div>
+
+            <div class="form-group form-group-full">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" required>
+            </div>
+
+            <div class="form-group form-group-full">
+                <label for="description">Description</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="priority">Priority</label>
+                <select id="priority" name="priority">
+                    <option value="Low">Low</option>
+                    <option value="Normal" selected>Normal</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="date_received">Date Received</label>
+                <input type="date" id="date_received" name="date_received" required>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Create PQ</button>
+            <a href="/pq" class="btn btn-secondary">Back to List</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
