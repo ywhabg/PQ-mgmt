@@ -51,16 +51,9 @@ def create_app(config_name=None):
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(workflow_bp)
 
-    @app.route("/", methods=["GET"])
-    def index():
-        return jsonify(
-            {
-                "name": "DPQMS API",
-                "version": "1.0.0",
-                "status": "running",
-                "environment": config_name,
-            }
-        ), 200
+    @app.route("/")
+    def home():
+        return render_template("home.html")
 
     @app.route("/health", methods=["GET"])
     def health_check():
@@ -98,6 +91,8 @@ def create_app(config_name=None):
         logging.exception(f"Internal server error: {error}")
         return jsonify({"error": "Internal server error"}), 500
 
+
+   
     return app
 
 
