@@ -25,6 +25,11 @@ def create_app(config_name=None):
     db.init_app(app)
     jwt.init_app(app)
 
+
+    # Create tables automatically
+    with app.app_context():
+        db.create_all()
+    
     cors.init_app(
         app,
         origins=app.config["CORS_ORIGINS"],
