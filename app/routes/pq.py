@@ -1,13 +1,12 @@
 from flask import Blueprint, render_template, request, redirect, url_for
-from app.models import PQRecord
-from app import db
 from datetime import datetime
+from app import db
+from app.models import PQRecord
 
-pq_bp = Blueprint('pq', __name__)
+bp = Blueprint("pq", __name__)
 
-@pq_bp.route("/pq/create", methods=["GET", "POST"])
+@bp.route("/pq/create", methods=["GET", "POST"])
 def create_pq():
-    
     if request.method == "POST":
         pq = PQRecord(
             pq_reference_no=request.form.get("pq_reference_no"),
@@ -16,15 +15,17 @@ def create_pq():
             agency=request.form.get("agency"),
             priority=request.form.get("priority"),
             status="New",
-            date_received=datetime.strptime(
-                request.form.get("date_received"), "%Y-%m-%d"
-            )
+            date_received=datetime.strptime(request.form.get("date_received"), "%Y-%m-%d").date()
         )
 
         db.session.add(pq)
         db.session.commit()
-
         return redirect(url_for("pq.list_pq"))
 
-    # 👇 THIS IS WHERE IT BELONGS
     return render_template("create_pq.html")
+
+
+@bp.route("/pq")
+def list_pq():
+    pqs = PQRecord.query.all()
+    return render_template("list_pq.html", pqs=pqs)
