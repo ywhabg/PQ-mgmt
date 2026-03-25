@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">PQ Management System</h1>
+    <p class="page-subtitle">Corporate tracking and management of parliamentary questions.</p>
+</div>
+
+<div class="card">
+    <h2 class="card-title">Welcome</h2>
+    <p>This application is now running successfully.</p>
+
+    <div class="form-actions">
+        <a href="/pq" class="btn btn-primary">View PQ Records</a>
+        <a href="/pq/create" class="btn btn-secondary">Create New PQ</a>
+    </div>
+</div>
+{% endblock %}
