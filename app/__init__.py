@@ -2,9 +2,8 @@ import logging
 import os
 import sys
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify,render_template
 from sqlalchemy import text
-
 from app.extensions import db, jwt, cors, migrate, redis_client
 from config import config
 
