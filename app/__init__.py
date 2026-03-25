@@ -17,7 +17,8 @@ def create_app(config_name="production"):
 
     @app.route("/")
     def home():
-        return "App is running"
+        return render_template("index.html")
 
     return app
     
+ 
