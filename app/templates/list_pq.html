@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block title %}PQ List{% endblock %}
+
+{% block content %}
+<div class="page-header flex-between">
+    <div>
+        <h1 class="page-title">PQ Records</h1>
+        <p class="page-subtitle">View and monitor all parliamentary question records.</p>
+    </div>
+    <div>
+        <a href="/pq/create" class="btn btn-primary">+ Create New PQ</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Ref No</th>
+                    <th>Title</th>
+                    <th>Agency</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pq in pqs %}
+                <tr>
+                    <td>{{ pq.pq_reference_no }}</td>
+                    <td>{{ pq.title }}</td>
+                    <td>{{ pq.agency }}</td>
+                    <td>
+                        {% if pq.status == "New" %}
+                            <span class="badge badge-new">{{ pq.status }}</span>
+                        {% elif pq.status == "In Progress" %}
+                            <span class="badge badge-progress">{{ pq.status }}</span>
+                        {% elif pq.status == "Closed" %}
+                            <span class="badge badge-closed">{{ pq.status }}</span>
+                        {% else %}
+                            <span class="badge badge-new">{{ pq.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if pq.priority == "High" %}
+                            <span class="badge badge-high">{{ pq.priority }}</span>
+                        {% elif pq.priority == "Low" %}
+                            <span class="badge badge-low">{{ pq.priority }}</span>
+                        {% else %}
+                            <span class="badge badge-normal">{{ pq.priority }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5">No PQ records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
