@@ -20,8 +20,8 @@ openpyxl==3.1.5
 PyPDF2==3.0.1
 requests==2.32.3
 
-Flask-Login
-Flask-WTF
-email-validator
-psycopg2-binary
+Flask-Login==0.6.3
+Flask-WTF==1.2.1
+email-validator==2.2.0
+psycopg2-binary==2.9.9
 
