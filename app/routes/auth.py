@@ -1,29 +1,32 @@
-from flask import Blueprint, jsonify, request
-from flask_jwt_extended import create_access_token
+from flask import Blueprint, render_template, redirect, url_for, flash
+from flask_login import login_user, logout_user, login_required
 
-bp = Blueprint("auth", __name__, url_prefix="/auth")
+from app.forms import LoginForm
+from app.models import User
 
-
-@bp.route("/ping", methods=["GET"])
-def ping():
-    return jsonify({"module": "auth", "status": "ok"}), 200
+auth_bp = Blueprint("auth", __name__)
 
 
-@bp.route("/login", methods=["POST"])
+@auth_bp.route("/login", methods=["GET", "POST"])
 def login():
-    data = request.get_json(silent=True) or {}
+    form = LoginForm()
 
-    email = data.get("email")
-    password = data.get("password")
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data.lower()).first()
 
-    if not email or not password:
-        return jsonify({"error": "Email and password are required"}), 400
+        if user and user.check_password(form.password.data):
+            login_user(user)
+            flash("Login successful.", "success")
+            return redirect(url_for("dashboard.home"))
 
-    token = create_access_token(identity=email)
+        flash("Invalid email or password.", "danger")
 
-    return jsonify(
-        {
-            "message": "Login successful",
-            "access_token": token,
-        }
-    ), 200
+    return render_template("login.html", form=form)
+
+
+@auth_bp.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out.", "info")
+    return redirect(url_for("auth.login"))
