@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}PQ List{% endblock %}
+
+{% block content %}
+<h2>PQ Records</h2>
+
+<form method="GET" action="{{ url_for('pq.list_pqs') }}">
+    <div class="grid-2">
+        <div>
+            <label for="status">Status</label>
+            <input type="text" name="status" id="status" value="{{ status }}">
+        </div>
+        <div>
+            <label for="agency">Agency</label>
+            <input type="text" name="agency" id="agency" value="{{ agency }}">
+        </div>
+    </div>
+
+    <label for="keyword">Keyword (Reference No / Title)</label>
+    <input type="text" name="keyword" id="keyword" value="{{ keyword }}">
+
+    <button type="submit" class="btn">Filter</button>
+    <a href="{{ url_for('pq.list_pqs') }}" class="btn btn-secondary">Reset</a>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Reference No</th>
+            <th>Title</th>
+            <th>Agency</th>
+            <th>Status</th>
+            <th>Priority</th>
+            <th>Due Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if pqs %}
+            {% for pq in pqs %}
+                <tr>
+                    <td>{{ pq.pq_reference_no }}</td>
+                    <td>{{ pq.title }}</td>
+                    <td>{{ pq.ministry_or_agency }}</td>
+                    <td>
+                        {% if pq.status == "Open" %}
+                            <span class="badge badge-open">{{ pq.status }}</span>
+                        {% elif pq.status == "In Progress" %}
+                            <span class="badge badge-in-progress">{{ pq.status }}</span>
+                        {% elif pq.status == "Closed" %}
+                            <span class="badge badge-closed">{{ pq.status }}</span>
+                        {% else %}
+                            <span class="badge">{{ pq.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ pq.priority }}</td>
+                    <td>{{ pq.due_date or "-" }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('pq.view_pq', pq_id=pq.id) }}">View</a>
+                        <a href="{{ url_for('pq.edit_pq', pq_id=pq.id) }}">Edit</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="7">No PQ records found.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+{% endblock %}
