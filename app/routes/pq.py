@@ -71,7 +71,7 @@ def create_pq():
         flash("PQ created successfully.", "success")
         return redirect(url_for("pq.view_pq", pq_id=pq.id))
 
-    return render_template("pq_create.html", form=form)
+    return render_template("pq_create.html", form=form, is_edit=False)
 
 
 @pq_bp.route("/<int:pq_id>", methods=["GET", "POST"])
@@ -100,11 +100,17 @@ def view_pq(pq_id):
 @login_required
 def edit_pq(pq_id):
     pq = PQRecord.query.get_or_404(pq_id)
-    form = PQForm(obj=pq)
+
+    # FIX: only populate form from obj on GET, not on POST
+    # (avoids WTForms overwriting submitted POST data with obj values)
+    form = PQForm(request.form if request.method == "POST" else None, obj=pq)
 
     users = User.query.filter_by(is_active_user=True).order_by(User.full_name.asc()).all()
     form.assigned_to_user_id.choices = [(0, "-- Unassigned --")] + [(u.id, u.full_name) for u in users]
-    form.assigned_to_user_id.data = pq.assigned_to_user_id or 0
+
+    # FIX: only set default on GET so POST submission isn't overwritten
+    if request.method == "GET":
+        form.assigned_to_user_id.data = pq.assigned_to_user_id or 0
 
     if form.validate_on_submit():
         old_status = pq.status
