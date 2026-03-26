@@ -1,24 +1,96 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-</head>
-<body>
-    <h1>Login</h1>
-    <form method="POST">
-        <div>
-            <label for="username">Username</label>
-            <input type="text" name="username" id="username" required>
-        </div>
-        <br>
-        <div>
-            <label for="password">Password</label>
-            <input type="password" name="password" id="password" required>
-        </div>
-        <br>
-        <button type="submit">Login</button>
-    </form>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-shell">
+    <div class="login-layout">
+        <section class="login-panel">
+            <div>
+                <div class="login-eyebrow">Secure Access</div>
+                <h1>PQ Management System</h1>
+                <p>
+                    Track parliamentary questions, manage assignments, monitor deadlines,
+                    and keep updates in one place.
+                </p>
+
+                <div class="login-feature-list">
+                    <div class="login-feature">
+                        <div class="login-feature-icon">✓</div>
+                        <div class="login-feature-text">
+                            <strong>Central tracking</strong>
+                            <span>Manage all PQ records consistently and securely.</span>
+                        </div>
+                    </div>
+
+                    <div class="login-feature">
+                        <div class="login-feature-icon">⏱</div>
+                        <div class="login-feature-text">
+                            <strong>Deadline visibility</strong>
+                            <span>See priorities, ownership, and due dates clearly.</span>
+                        </div>
+                    </div>
+
+                    <div class="login-feature">
+                        <div class="login-feature-icon">📝</div>
+                        <div class="login-feature-text">
+                            <strong>Update history</strong>
+                            <span>Maintain a clean audit trail of actions and responses.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="login-card">
+            <div class="login-card-header">
+                <h2>Sign in</h2>
+                <p>Enter your credentials to continue.</p>
+            </div>
+
+            <form method="POST" novalidate>
+                {{ form.hidden_tag() }}
+
+                <div class="form-group">
+                    <label for="{{ form.email.id }}">{{ form.email.label.text }}</label>
+                    {{ form.email(class="form-control", placeholder="Enter your email address") }}
+                    {% if form.email.errors %}
+                        {% for error in form.email.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password.id }}">{{ form.password.label.text }}</label>
+                    {{ form.password(class="form-control", placeholder="Enter your password") }}
+                    {% if form.password.errors %}
+                        {% for error in form.password.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+
+                <div class="login-row">
+                    <label class="login-checkbox">
+                        <input type="checkbox" name="remember_me">
+                        <span>Remember me</span>
+                    </label>
+
+                    <a href="#">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="login-note">
+                This is a secure internal system. Unauthorised access is prohibited.
+            </div>
+
+            <div class="login-helper">
+                Need help? Contact your system administrator.
+            </div>
+        </section>
+    </div>
+</div>
+{% endblock %}
