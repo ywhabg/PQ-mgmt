@@ -1,5 +1,7 @@
-import os
 from app import create_app
+from app.extensions import db
+from app.models import User
+
 
 app = create_app()
 # Create admin user if not exists
