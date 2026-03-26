@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block title %}PQ Detail{% endblock %}
+
+{% block content %}
+<h2>PQ Detail</h2>
+
+<div class="card">
+    <h3>{{ pq.title }}</h3>
+    <p><strong>Reference No:</strong> {{ pq.pq_reference_no }}</p>
+    <p><strong>Description:</strong> {{ pq.description }}</p>
+    <p><strong>Ministry / Agency:</strong> {{ pq.ministry_or_agency }}</p>
+    <p><strong>Submitted By:</strong> {{ pq.submitted_by }}</p>
+    <p><strong>Priority:</strong> {{ pq.priority }}</p>
+    <p><strong>Status:</strong> {{ pq.status }}</p>
+    <p><strong>Due Date:</strong> {{ pq.due_date or "-" }}</p>
+    <p><strong>Date Received:</strong> {{ pq.date_received or "-" }}</p>
+    <p><strong>Date Closed:</strong> {{ pq.date_closed or "-" }}</p>
+
+    <p>
+        <strong>Assigned To:</strong>
+        {% if pq.assigned_user %}
+            {{ pq.assigned_user.full_name }}
+        {% else %}
+            Unassigned
+        {% endif %}
+    </p>
+
+    <div class="actions">
+        <a class="btn" href="{{ url_for('pq.edit_pq', pq_id=pq.id) }}">Edit PQ</a>
+        <a class="btn btn-secondary" href="{{ url_for('pq.list_pqs') }}">Back to List</a>
+    </div>
+</div>
+
+<h3>Updates</h3>
+
+{% if pq.updates %}
+    {% for update in pq.updates|sort(attribute='created_at', reverse=True) %}
+        <div class="card">
+            <p><strong>Type:</strong> {{ update.update_type }}</p>
+            <p>{{ update.update_text }}</p>
+            <p class="muted">
+                By:
+                {% if update.updated_by %}
+                    {{ update.updated_by.full_name }}
+                {% else %}
+                    Unknown user
+                {% endif %}
+                {% if update.created_at %}
+                    | {{ update.created_at }}
+                {% endif %}
+            </p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No updates yet.</p>
+{% endif %}
+
+<h3>Add Update</h3>
+<form method="POST">
+    {{ update_form.hidden_tag() }}
+
+    <label for="update_type">Update Type</label>
+    {{ update_form.update_type() }}
+
+    <label for="update_text">Update Text</label>
+    {{ update_form.update_text() }}
+
+    <button type="submit" class="btn">Add Update</button>
+</form>
+{% endblock %}
