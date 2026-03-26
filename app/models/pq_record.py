@@ -12,7 +12,14 @@ class PQRecord(db.Model):
     ministry_or_agency = db.Column(db.String(150), nullable=False)
     submitted_by = db.Column(db.String(150), nullable=False)
 
+    # FIX: added backref="assigned_pqs" so User.assigned_pqs works,
+    # and foreign_keys is explicit to avoid ambiguity with multiple FK to users
     assigned_to_user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+    assigned_user = db.relationship(
+        "User",
+        foreign_keys=[assigned_to_user_id],
+        backref="assigned_pqs"
+    )
 
     priority = db.Column(db.String(20), nullable=False, default="Medium")
     status = db.Column(db.String(50), nullable=False, default="New")
@@ -42,3 +49,10 @@ class PQUpdate(db.Model):
     update_type = db.Column(db.String(50), nullable=False, default="General")
     updated_by_user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # FIX: added relationship so update.updated_by works in pq_detail.html
+    updated_by = db.relationship(
+        "User",
+        foreign_keys=[updated_by_user_id],
+        backref="pq_updates_made"
+    )
