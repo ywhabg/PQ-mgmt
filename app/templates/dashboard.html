@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - PQ Management{% endblock %}
+
+{% block content %}
+<div class="page-header mb-20">
+    <h1 class="mb-8">Dashboard</h1>
+    <p class="mb-0">Overview of PQ workload, status, and recent activity.</p>
+</div>
+
+<div class="cards">
+    <div class="stat-card">
+        <h3>Total PQs</h3>
+        <p>{{ total_pqs }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Open PQs</h3>
+        <p>{{ open_pqs }}</p>
+    </div>
+
+    <div class="stat-card">
+        <h3>Closed PQs</h3>
+        <p>{{ closed_pqs }}</p>
+    </div>
+
+    <div class="stat-card danger">
+        <h3>Overdue PQs</h3>
+        <p>{{ overdue_pqs }}</p>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Quick Actions</h2>
+    </div>
+
+    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <a href="{{ url_for('pq.create_pq') }}" class="btn btn-primary">Create New PQ</a>
+        <a href="{{ url_for('pq.list_pqs') }}" class="btn btn-secondary">View All PQ Records</a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>Recent PQs</h2>
+    </div>
+
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Reference No</th>
+                    <th>Title</th>
+                    <th>Agency</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Assigned To</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pq in recent_pqs %}
+                <tr>
+                    <td>
+                        <a href="{{ url_for('pq.view_pq', pq_id=pq.id) }}">
+                            {{ pq.pq_reference_no }}
+                        </a>
+                    </td>
+                    <td>{{ pq.title }}</td>
+                    <td>{{ pq.ministry_or_agency }}</td>
+                    <td>
+                        <span class="badge badge-{{ pq.status|lower|replace(' ', '-') }}">
+                            {{ pq.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <span class="badge badge-{{ pq.priority|lower }}">
+                            {{ pq.priority }}
+                        </span>
+                    </td>
+                    <td>{{ pq.assigned_user.full_name if pq.assigned_user else "Unassigned" }}</td>
+                    <td>{{ pq.due_date if pq.due_date else "-" }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7">No PQ records found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
