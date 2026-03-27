@@ -12,13 +12,12 @@ class PQRecord(db.Model):
     ministry_or_agency = db.Column(db.String(150), nullable=False)
     submitted_by = db.Column(db.String(150), nullable=False)
 
-    # FIX: added backref="assigned_pqs" so User.assigned_pqs works,
-    # and foreign_keys is explicit to avoid ambiguity with multiple FK to users
     assigned_to_user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
+
     assigned_user = db.relationship(
         "User",
         foreign_keys=[assigned_to_user_id],
-        backref="assigned_pqs"
+        back_populates="assigned_pqs"
     )
 
     priority = db.Column(db.String(20), nullable=False, default="Medium")
@@ -28,15 +27,15 @@ class PQRecord(db.Model):
     date_received = db.Column(db.Date, nullable=True)
     date_closed = db.Column(db.Date, nullable=True)
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
 
     updates = db.relationship(
         "PQUpdate",
-        backref="pq_record",
-        lazy=True,
+        back_populates="pq_record",
         cascade="all, delete-orphan",
-        order_by="desc(PQUpdate.created_at)"
+        order_by="desc(PQUpdate.created_at)",
+        lazy=True
     )
 
 
@@ -48,11 +47,15 @@ class PQUpdate(db.Model):
     update_text = db.Column(db.Text, nullable=False)
     update_type = db.Column(db.String(50), nullable=False, default="General")
     updated_by_user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 
-    # FIX: added relationship so update.updated_by works in pq_detail.html
+    pq_record = db.relationship(
+        "PQRecord",
+        back_populates="updates"
+    )
+
     updated_by = db.relationship(
         "User",
         foreign_keys=[updated_by_user_id],
-        backref="pq_updates_made"
+        back_populates="pq_updates_made"
     )
